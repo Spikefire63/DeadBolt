@@ -3,6 +3,9 @@
 #include "EnemyBaseController.h"
 #include "Kismet/GameplayStatics.h"
 #include "AIController.h"
+#include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "DeadBoltCharacter.h"
 
 // Sets default values
 AEnemyBaseController::AEnemyBaseController()
@@ -20,6 +23,7 @@ void AEnemyBaseController::BeginPlay()
 	if (HasAuthority())
 	{
 		GetWorldTimerManager().SetTimer(ChaseTimer, this, &AEnemyBaseController::ChasePlayer, 0.5f, true);
+		GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemyBaseController::TryAttack, 1.f, true);
 	}
 }
 
@@ -41,6 +45,15 @@ void AEnemyBaseController::Hit(float Damage)
 	if (Health <= 0.f)
 	{
 		Destroy();
+	}
+}
+
+void AEnemyBaseController::TryAttack()
+{
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(this, 0);
+	if (Player && FVector::Dist(GetActorLocation(), Player->GetActorLocation()) <= AttackRange)
+	{
+		UGameplayStatics::ApplyDamage(Player, AttackDamage, GetController(), this, UDamageType::StaticClass());
 	}
 }
 

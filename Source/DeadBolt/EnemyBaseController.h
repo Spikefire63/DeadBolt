@@ -27,4 +27,14 @@ protected:
 	float Health = 100.f;
 
 	FTimerHandle ChaseTimer;
+
+	UPROPERTY(EditAnywhere, Category = "Enemy")
+	float AttackRange = 200.f;
+
+	UPROPERTY(EditAnywhere, Category = "Enemy")
+	float AttackDamage = 10.f;
+
+	FTimerHandle AttackTimer;
+
+	void TryAttack();
 };

@@ -10,6 +10,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
+#include "Net/UnrealNetwork.h"
+#include "Engine/DamageEvents.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -99,4 +101,24 @@ void ADeadBoltCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void ADeadBoltCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ADeadBoltCharacter, Health);
+}
+
+float ADeadBoltCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
+	AController* EventInstigator, AActor* DamageCauser)
+{
+	if (!HasAuthority()) return 0.f;
+
+	Health = FMath::Clamp(Health - DamageAmount, 0.f, 100.f);
+	UE_LOG(LogTemp, Warning, TEXT("Player health: %f"), Health);
+	return DamageAmount;
+}
+
+void ADeadBoltCharacter::OnRep_Health()
+{
 }
