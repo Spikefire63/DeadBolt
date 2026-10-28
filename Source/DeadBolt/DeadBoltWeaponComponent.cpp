@@ -23,10 +23,17 @@ UDeadBoltWeaponComponent::UDeadBoltWeaponComponent()
 
 void UDeadBoltWeaponComponent::Fire()
 {
+
 	if (Character == nullptr || Character->GetController() == nullptr)
 	{
 		return;
 	}
+
+	if (CurrentAmmo <= 0)
+	{
+		return;
+	}
+	CurrentAmmo--;
 
 	// Try and fire a projectile
 	if (ProjectileClass != nullptr)
@@ -66,6 +73,11 @@ void UDeadBoltWeaponComponent::Fire()
 	}
 }
 
+void UDeadBoltWeaponComponent::Reload()
+{
+	CurrentAmmo = MaxAmmo;
+}
+
 bool UDeadBoltWeaponComponent::AttachWeapon(ADeadBoltCharacter* TargetCharacter)
 {
 	Character = TargetCharacter;
@@ -93,6 +105,7 @@ bool UDeadBoltWeaponComponent::AttachWeapon(ADeadBoltCharacter* TargetCharacter)
 		{
 			// Fire
 			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UDeadBoltWeaponComponent::Fire);
+			EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Started, this, &UDeadBoltWeaponComponent::Reload);
 		}
 	}
 

@@ -49,6 +49,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void Fire();
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* ReloadAction;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Ammo)
+	int32 MaxAmmo = 10;
+
+	UPROPERTY(BlueprintReadOnly, Category = Ammo)
+	int32 CurrentAmmo = 10;
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void Reload();
+
 protected:
 	/** Ends gameplay for this component. */
 	UFUNCTION()
