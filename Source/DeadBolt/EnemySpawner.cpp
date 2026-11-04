@@ -3,6 +3,7 @@
 
 #include "EnemySpawner.h"
 #include "EnemyBaseController.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AEnemySpawner::AEnemySpawner()
@@ -10,7 +11,17 @@ AEnemySpawner::AEnemySpawner()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
+	bReplicates = true;
+
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+}
+
+void AEnemySpawner::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AEnemySpawner, CurrentWave);
+	DOREPLIFETIME(AEnemySpawner, EnemiesAlive);
 }
 
 // Called when the game starts or when spawned

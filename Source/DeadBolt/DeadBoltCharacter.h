@@ -50,9 +50,21 @@ class ADeadBoltCharacter : public ACharacter
 
 	UFUNCTION()
 	void OnRep_Health();
+
+	bool bIsDead = false;   // only the server needs this
+
+	void Die();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastOnDeath();
+
+	UFUNCTION(Client, Reliable)
+	void ClientStartSpectating(AActor* Target);
 	
 public:
 	ADeadBoltCharacter();
+
+	bool IsDead() const { return bIsDead; }
 
 protected:
 	/** Called for movement input */

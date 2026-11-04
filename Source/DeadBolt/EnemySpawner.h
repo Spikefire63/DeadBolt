@@ -21,6 +21,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	UPROPERTY(EditAnywhere, Category = "Spawner")
 	TSubclassOf<AEnemyBaseController> EnemyClass;
 
@@ -43,8 +45,12 @@ private:
 	FTimerHandle SpawnTimer;
 	FTimerHandle WaveTimer;
 
+	UPROPERTY(Replicated)
 	int32 CurrentWave = 0;
+
 	int32 EnemiesToSpawn = 0; 
+	
+	UPROPERTY(Replicated)
 	int32 EnemiesAlive = 0;    
 
 	void StartNextWave();

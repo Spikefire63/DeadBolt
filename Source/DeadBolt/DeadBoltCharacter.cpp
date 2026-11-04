@@ -1,4 +1,3 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "DeadBoltCharacter.h"
 #include "DeadBoltProjectile.h"
@@ -12,6 +11,8 @@
 #include "Engine/LocalPlayer.h"
 #include "Net/UnrealNetwork.h"
 #include "Engine/DamageEvents.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PlayerController.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -36,6 +37,8 @@ ADeadBoltCharacter::ADeadBoltCharacter()
 	Mesh1P->bCastDynamicShadow = false;
 	Mesh1P->CastShadow = false;
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
+
+	bReplicates = true;
 
 }
 
@@ -115,10 +118,56 @@ float ADeadBoltCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 	if (!HasAuthority()) return 0.f;
 
 	Health = FMath::Clamp(Health - DamageAmount, 0.f, 100.f);
-	UE_LOG(LogTemp, Warning, TEXT("Player health: %f"), Health);
+
+	if (Health <= 0.f)
+	{
+		Die();
+	}
 	return DamageAmount;
+}
+
+void ADeadBoltCharacter::Die()   // server only
+{
+	bIsDead = true;
+	GetCharacterMovement()->DisableMovement();
+	MulticastOnDeath();
+
+	// Find another living player to spectate
+	AActor* Target = nullptr;
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		ADeadBoltCharacter* Other = Cast<ADeadBoltCharacter>(It->Get()->GetPawn());
+		if (Other && Other != this && !Other->IsDead())
+		{
+			Target = Other;
+			break;
+		}
+	}
+
+	ClientStartSpectating(Target);
+}
+
+void ADeadBoltCharacter::MulticastOnDeath_Implementation()   // runs on everyone
+{
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetMesh()->SetVisibility(false);
+	Mesh1P->SetVisibility(false);
+}
+
+void ADeadBoltCharacter::ClientStartSpectating_Implementation(AActor* Target)   // runs only on the dead player's client
+{
+	APlayerController* PC = Cast<APlayerController>(Controller);
+	if (!PC) return;
+
+	DisableInput(PC);
+
+	if (Target)
+	{
+		PC->SetViewTargetWithBlend(Target, 0.5f);
+	}
 }
 
 void ADeadBoltCharacter::OnRep_Health()
 {
+
 }
