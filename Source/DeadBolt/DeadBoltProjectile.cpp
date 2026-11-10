@@ -49,7 +49,6 @@ void ADeadBoltProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
 	{
 		OtherComp->AddImpulseAtLocation(GetVelocity() * 300.0f, GetActorLocation());
-
-		Destroy();
 	}
+	Destroy();
 }
