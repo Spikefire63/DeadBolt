@@ -67,6 +67,8 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ServerReload();
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 protected:
 	/** Ends gameplay for this component. */
 	UFUNCTION()

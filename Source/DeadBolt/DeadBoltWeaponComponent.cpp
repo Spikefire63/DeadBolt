@@ -12,6 +12,7 @@
 #include "Animation/AnimInstance.h"
 #include "Engine/LocalPlayer.h"
 #include "Engine/World.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
 UDeadBoltWeaponComponent::UDeadBoltWeaponComponent()
@@ -56,6 +57,10 @@ void UDeadBoltWeaponComponent::Fire()
 
 void UDeadBoltWeaponComponent::ServerFire_Implementation()
 {
+
+	UE_LOG(LogTemp, Warning, TEXT("ServerFire ran. Character=%d Ammo=%d ProjectileClass=%d"),
+		Character != nullptr, CurrentAmmo, ProjectileClass != nullptr);
+
 	if (Character == nullptr || Character->GetController() == nullptr || CurrentAmmo <= 0)
 	{
 		return;
@@ -101,6 +106,11 @@ bool UDeadBoltWeaponComponent::AttachWeapon(ADeadBoltCharacter* TargetCharacter)
 {
 	Character = TargetCharacter;
 
+	if (GetOwner() != nullptr && GetOwner()->HasAuthority())
+	{
+		GetOwner()->SetOwner(Character);
+	}
+
 	// Check that the character is valid, and has no weapon component yet
 	if (Character == nullptr || Character->GetInstanceComponents().FindItemByClass<UDeadBoltWeaponComponent>())
 	{
@@ -129,6 +139,12 @@ bool UDeadBoltWeaponComponent::AttachWeapon(ADeadBoltCharacter* TargetCharacter)
 	}
 
 	return true;
+}
+
+void UDeadBoltWeaponComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(UDeadBoltWeaponComponent, CurrentAmmo);
 }
 
 void UDeadBoltWeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)

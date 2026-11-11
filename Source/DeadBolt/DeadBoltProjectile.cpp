@@ -7,6 +7,9 @@
 
 ADeadBoltProjectile::ADeadBoltProjectile() 
 {
+	bReplicates = true;
+	SetReplicateMovement(true);
+
 	// Use a sphere as a simple collision representation
 	CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
 	CollisionComp->InitSphereRadius(0.5f);
