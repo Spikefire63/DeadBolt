@@ -27,10 +27,31 @@ void AEnemyBaseController::BeginPlay()
 	}
 }
 
+APawn* AEnemyBaseController::GetNearestPlayer() const
+{
+	APawn* Nearest = nullptr;
+	float BestDist = TNumericLimits<float>::Max();
+
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		APawn* Pawn = It->Get() ? It->Get()->GetPawn() : nullptr;
+		if (Pawn != nullptr)
+		{
+			const float Dist = FVector::DistSquared(GetActorLocation(), Pawn->GetActorLocation());
+			if (Dist < BestDist)
+			{
+				BestDist = Dist;
+				Nearest = Pawn;
+			}
+		}
+	}
+	return Nearest;
+}
+
 void AEnemyBaseController::ChasePlayer()
 {
 	AAIController* AI = Cast<AAIController>(GetController());
-	APawn* Player = UGameplayStatics::GetPlayerPawn(this, 0);
+	APawn* Player = GetNearestPlayer();
 
 	if (AI && Player)
 	{
@@ -50,7 +71,7 @@ void AEnemyBaseController::Hit(float Damage)
 
 void AEnemyBaseController::TryAttack()
 {
-	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(this, 0);
+	APawn* Player = GetNearestPlayer();
 	if (Player && FVector::Dist(GetActorLocation(), Player->GetActorLocation()) <= AttackRange)
 	{
 		UGameplayStatics::ApplyDamage(Player, AttackDamage, GetController(), this, UDamageType::StaticClass());

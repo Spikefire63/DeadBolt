@@ -23,6 +23,8 @@ protected:
 
 	void ChasePlayer();
 
+	APawn* GetNearestPlayer() const;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
 	float Health = 100.f;
 

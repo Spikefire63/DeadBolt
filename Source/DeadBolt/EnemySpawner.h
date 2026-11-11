@@ -26,6 +26,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Spawner")
 	TSubclassOf<AEnemyBaseController> EnemyClass;
 
+	UPROPERTY()
+	TArray<AActor*> SpawnPoints;
+
 	UPROPERTY(EditAnywhere, Category = "Waves")
 	int32 MaxWaves = 3;
 
