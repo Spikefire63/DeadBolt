@@ -55,7 +55,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Ammo)
 	int32 MaxAmmo = 10;
 
-	UPROPERTY(BlueprintReadOnly, Category = Ammo)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = Weapon)
 	int32 CurrentAmmo = 10;
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
