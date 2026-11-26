@@ -110,6 +110,7 @@ void ADeadBoltCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ADeadBoltCharacter, Health);
+	DOREPLIFETIME(ADeadBoltCharacter, Kills);
 }
 
 float ADeadBoltCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,

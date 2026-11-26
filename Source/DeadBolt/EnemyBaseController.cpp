@@ -59,12 +59,21 @@ void AEnemyBaseController::ChasePlayer()
 	}
 }
 
-void AEnemyBaseController::Hit(float Damage)
+void AEnemyBaseController::Hit(float Damage, ADeadBoltCharacter* Attacker)
 {
+	if (!HasAuthority() || Health <= 0.f)
+	{
+		return;
+	}
+
 	Health -= Damage;
 
 	if (Health <= 0.f)
 	{
+		if (Attacker)
+		{
+			Attacker->Kills++;
+		}
 		Destroy();
 	}
 }

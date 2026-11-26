@@ -51,7 +51,8 @@ class ADeadBoltCharacter : public ACharacter
 	UFUNCTION()
 	void OnRep_Health();
 
-	bool bIsDead = false;   // only the server needs this
+	// only the server needs this
+	bool bIsDead = false;   
 
 	void Die();
 
@@ -65,6 +66,9 @@ public:
 	ADeadBoltCharacter();
 
 	bool IsDead() const { return bIsDead; }
+
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = "status")
+	int32 Kills = 0;
 
 protected:
 	/** Called for movement input */

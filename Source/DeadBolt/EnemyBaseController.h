@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "EnemyBaseController.generated.h"
 
+class ADeadBoltCharacter;
+
 UCLASS()
 class DEADBOLT_API AEnemyBaseController : public ACharacter
 {
@@ -15,7 +17,7 @@ public:
 	// Sets default values for this character's properties
 	AEnemyBaseController();
 
-	void Hit(float Damage);
+	void Hit(float Damage, ADeadBoltCharacter* Attacker);
 
 protected:
 	// Called when the game starts or when spawned

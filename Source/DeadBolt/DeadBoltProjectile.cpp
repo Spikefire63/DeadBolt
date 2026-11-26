@@ -4,6 +4,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
 #include "EnemyBaseController.h"
+#include "DeadBoltCharacter.h"
 
 ADeadBoltProjectile::ADeadBoltProjectile() 
 {
@@ -42,7 +43,7 @@ void ADeadBoltProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor
 	{
 		if (HasAuthority())
 		{
-			Enemy->Hit(25.f);
+			Enemy->Hit(25.f, Cast<ADeadBoltCharacter>(GetInstigator()));
 		}
 		Destroy();
 		return;
