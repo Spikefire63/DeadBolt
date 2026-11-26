@@ -17,6 +17,9 @@ public:
 	// Sets default values for this actor's properties
 	AEnemySpawner();
 
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = "waves")
+	int32 EnemiesAlive = 0;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -50,11 +53,7 @@ private:
 
 	UPROPERTY(Replicated)
 	int32 CurrentWave = 0;
-
 	int32 EnemiesToSpawn = 0; 
-	
-	UPROPERTY(Replicated)
-	int32 EnemiesAlive = 0;    
 
 	void StartNextWave();
 	void SpawnEnemy();
